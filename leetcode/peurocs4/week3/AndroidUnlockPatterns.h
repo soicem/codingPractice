@@ -1,6 +1,4 @@
-#ifndef AndroidUnlockPatterns_h__
-#define AndroidUnlockPatterns_h__
-
+#pragma once
 
 #include <vector>
 #include <unordered_map>
@@ -74,6 +72,3 @@ public:
     return (IN_RANGE(usedCount, min, max + 1)) ? (answer + 1) : (answer);
   }
 };
-
-
-#endif // AndroidUnlockPatterns_h__

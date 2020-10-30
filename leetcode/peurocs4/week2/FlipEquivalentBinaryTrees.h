@@ -1,6 +1,4 @@
-#ifndef FlipEquivalentBinaryTrees_h__
-#define FlipEquivalentBinaryTrees_h__
-
+#pragma once
 
 using namespace std;
 
@@ -29,6 +27,3 @@ public:
     return canFlip;
   }
 };
-
-
-#endif // FlipEquivalentBinaryTrees_h__

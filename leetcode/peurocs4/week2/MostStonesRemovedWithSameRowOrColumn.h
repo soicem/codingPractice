@@ -1,6 +1,4 @@
-#ifndef MostStonesRemovedWithSameRowOrColumn_h__
-#define MostStonesRemovedWithSameRowOrColumn_h__
-
+#pragma once
 
 #include <vector>
 #include <unordered_map>
@@ -73,6 +71,3 @@ public:
     return depth;
   }
 };
-
-
-#endif // MostStonesRemovedWithSameRowOrColumn_h__

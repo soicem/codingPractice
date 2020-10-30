@@ -1,6 +1,4 @@
-#ifndef EvaluateDivision_h__
-#define EvaluateDivision_h__
-
+#pragma once
 
 #include <vector>
 #include <unordered_map>
@@ -66,6 +64,3 @@ public:
     return -1;
   }
 };
-
-
-#endif // EvaluateDivision_h__

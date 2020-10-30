@@ -1,6 +1,4 @@
-#ifndef CrackingTheSafe_h__
-#define CrackingTheSafe_h__
-
+#pragma once
 
 #include <vector>
 #include <unordered_set>
@@ -41,6 +39,3 @@ public:
     }
   }
 };
-
-
-#endif // CrackingTheSafe_h__

@@ -1,6 +1,4 @@
-#ifndef WordSearchII_h__
-#define WordSearchII_h__
-
+#pragma once
 
 #include <vector>
 #include <unordered_map>
@@ -91,6 +89,3 @@ public:
     board[y][x] = currentChar;
   }
 };
-
-
-#endif // WordSearchII_h__

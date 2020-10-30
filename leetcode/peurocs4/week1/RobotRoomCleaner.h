@@ -1,6 +1,4 @@
-#ifndef RobotRoomCleaner_h__
-#define RobotRoomCleaner_h__
-
+#pragma once
 
 #include <unordered_set>
 #include <unordered_map>
@@ -80,6 +78,3 @@ public:
     robot.move();
   }
 };
-
-
-#endif // RobotRoomCleaner_h__

@@ -1,91 +1,144 @@
 #pragma once
 
-#include <vector>
+#include <iostream>
+#include <set>
+#include <string>
 #include <unordered_map>
-
-using namespace std;
-
-#define IN_RANGE(x, low, high) (low <= x && x < high)
+#include <unordered_set>
+#include <vector>
 
 struct TrieNode {
-  char nodeChar;
-  unordered_map<char, vector<TrieNode*>> nextChars;
+  char value;
+  int count;
+  std::unordered_map<char, TrieNode*> next;
 
-  TrieNode() : TrieNode(' ') {}
-  TrieNode(char nodeChar) : nodeChar(nodeChar) {}
+  TrieNode() : TrieNode('\0') {
+  }
+
+  TrieNode(char value) : value(value), count(0) {
+  }
+
+  void addNext(char value) {
+    if (next.count(value) == 0) {
+      next[value] = new TrieNode(value);
+    }
+    ++next[value]->count;
+  }
+
+  void removeNext(char value) {
+    if (hasNext(value)) {
+      --next[value]->count;
+    }
+  }
+
+  bool hasNext(char value) {
+    return next.count(value) > 0 && next[value]->count > 0;
+  }
 };
 
 class Trie {
 public:
-  TrieNode* root = new TrieNode();
-
-  bool has(string& word) {
-    return has(word, 0, root);
+  void addWord(std::string& word) {
+    auto* node = head;
+    for (auto c : word) {
+      node->addNext(c);
+      node = node->next[c];
+    }
   }
 
-  bool has(string& word, int at, TrieNode* node) {
-    if (at >= word.size()) { return true; }
-
-    auto& c = word[at];
-    if (node->nextChars.count(c) == 0) {
-      return false;
+  void removeWord(std::string& word) {
+    auto* node = head;
+    for (auto c : word) {
+      if (!node->hasNext(c)) { break; }
+      node->removeNext(c);
+      node = node->next[c];
     }
-
-    for (auto& nextNode : node->nextChars[c]) {
-      if (has(word, at + 1, nextNode)) {
-        return true;
-      }
-    }
-
-    return false;
   }
+
+  void print() {
+    print(head);
+    std::cout << "\n";
+  }
+
+  void print(TrieNode* node) {
+    if (node == nullptr) { return; }
+    std::cout << node->value << "[" << node->count << "]";
+    for (auto kValue : node->next) {
+      std::cout << " ";
+      print(kValue.second);
+    }
+    std::cout << "|";
+  }
+
+  TrieNode* head = new TrieNode();
 };
 
-pair<int, int> directions[4] {
-  {1, 0},
-  {0, 1},
-  {-1, 0},
-  {0, -1}
-};
 
 class Solution {
 public:
   Trie trie;
+  std::vector<std::string> answer;
+  std::set<std::pair<int, int>> visited;
 
-  vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+  std::vector<std::string> findWords(std::vector<std::vector<char>>& board, std::vector<std::string>& words) {
+    for (auto& word : words) {
+      trie.addWord(word);
+    }
+
     for (int y = 0; y < board.size(); ++y) {
       for (int x = 0; x < board[0].size(); ++x) {
-        dfs(board, x, y, trie.root);
+        auto c = board[y][x];
+        if (!trie.head->hasNext(c)) { continue; }
+        
+        std::string candidate(1, c);
+        recurse(board, x, y, trie.head->next[c], candidate);
       }
     }
-
-    vector<string> answer;
-    for (auto& word : words) {
-      if (trie.has(word)) {
-        answer.push_back(word);
-      }
-    }
+    
     return answer;
   }
 
-  void dfs(vector<vector<char>>& board, int x, int y, TrieNode* node) {
-    if (!IN_RANGE(y, 0, board.size())) { return; }
-    if (!IN_RANGE(x, 0, board[0].size())) { return; }
-    if (board[y][x] == '-') { return; } // if already used
+  const std::vector<std::vector<int>> DIRECTIONS = {
+    {1, 0},
+    {0, -1},
+    {-1, 0},
+    {0, 1}
+  };
 
-    char currentChar = board[y][x];
-    board[y][x] = '-'; // marked as used
-
-    auto currentNode = new TrieNode(currentChar);
-    if (node->nextChars.count(currentChar) == 0) {
-      node->nextChars[currentChar] = {};
-    }
-    node->nextChars[currentChar].push_back(currentNode);
-
-    for (auto& direction : directions) {
-      dfs(board, x + direction.first, y + direction.second, currentNode);
+  void recurse(std::vector<std::vector<char>>& board, int x, int y, TrieNode* node, std::string& candidate) {
+    if (node->next.empty()) {
+      answer.push_back(candidate);
+      trie.removeWord(candidate);
+      return;
     }
 
-    board[y][x] = currentChar;
+    visited.insert({x, y});
+
+    int countSum = 0;
+    for (auto pair : node->next) {
+      countSum += pair.second->count;
+    }
+
+    if (countSum < node->count) {
+      answer.push_back(candidate);
+      trie.removeWord(candidate);
+    }
+
+    for (auto dir : DIRECTIONS) {
+      auto nextX = x + dir[0];
+      auto nextY = y + dir[1];
+      if (visited.count({nextX, nextY})) { continue; }
+      if (nextX < 0 || nextX >= board[0].size()) { continue; }
+      if (nextY < 0 || nextY >= board.size()) { continue; }
+      
+      auto nextC = board[nextY][nextX];
+      if (!node->hasNext(nextC)) { continue; }
+
+      candidate.push_back(nextC);
+      recurse(board, nextX, nextY, node->next[nextC], candidate);
+      candidate.pop_back();
+    }
+    
+    visited.erase({x, y});
   }
 };

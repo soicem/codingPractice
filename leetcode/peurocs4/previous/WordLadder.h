@@ -1,6 +1,4 @@
-#ifndef WordLadder_h__
-#define WordLadder_h__
-
+#pragma once
 
 #include <vector>
 #include <string>
@@ -54,7 +52,4 @@ public:
 
     return 0;
   }
-};
-
-
-#endif // WordLadder_h__
+};

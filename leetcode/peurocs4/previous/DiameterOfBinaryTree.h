@@ -1,6 +1,5 @@
-#ifndef DiameterOfBinaryTree_h__
-#define DiameterOfBinaryTree_h__
-
+#pragma once
+#include <algorithm>
 
 using namespace std;
 
@@ -32,7 +31,4 @@ public:
     maxDiameter = max(maxDiameter, left + right);
     return max(left, right) + 1;
   }
-};
-
-
-#endif // DiameterOfBinaryTree_h__
+};

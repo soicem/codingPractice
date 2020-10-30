@@ -1,6 +1,4 @@
-#ifndef CountCompleteTreeNodes_h__
-#define CountCompleteTreeNodes_h__
-
+#pragma once
 
 #include <vector>
 
@@ -78,7 +76,4 @@ public:
 
     return false;
   }
-};
-
-
-#endif // CountCompleteTreeNodes_h__
+};

@@ -1,6 +1,4 @@
-#ifndef CourseScheduleII_h__
-#define CourseScheduleII_h__
-
+#pragma once
 
 #include <vector>
 #include <unordered_map>
@@ -51,7 +49,4 @@ public:
 
     return answer;
   }
-};
-
-
-#endif // CourseScheduleII_h__
+};

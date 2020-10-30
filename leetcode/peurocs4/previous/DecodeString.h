@@ -1,10 +1,7 @@
-#ifndef DecodeString_h__
-#define DecodeString_h__
-
+#pragma once
 
 #include <vector>
 #include <unordered_map>
-#include <cstring>
 #include <sstream>
 
 using namespace std;
@@ -46,7 +43,7 @@ public:
         numberString += iChar;
       }
       else if (iChar == '[') {
-        int repeatAmount = stoi(numberSs);
+        int repeatAmount = stoi(numberString);
         for (int j = 0; j < repeatAmount; ++j) {
           ss << recurse(str, i + 1, repeatRanges[i]);
         }
@@ -56,7 +53,4 @@ public:
     }
     return ss.str();
   }
-};
-
-
-#endif // DecodeString_h__
+};

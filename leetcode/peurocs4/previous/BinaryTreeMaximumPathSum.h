@@ -1,6 +1,4 @@
-#ifndef BinaryTreeMaximumPathSum_h__
-#define BinaryTreeMaximumPathSum_h__
-
+#pragma once
 
 #include <algorithm>
 #include <climits>
@@ -36,7 +34,4 @@ public:
 
     return node->val + max(left, right);
   }
-};
-
-
-#endif // BinaryTreeMaximumPathSum_h__
+};

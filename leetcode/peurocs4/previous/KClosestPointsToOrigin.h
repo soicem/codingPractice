@@ -1,6 +1,4 @@
-#ifndef KClosestPointsToOrigin_h__
-#define KClosestPointsToOrigin_h__
-
+#pragma once
 
 #include <vector>
 #include <queue>
@@ -38,7 +36,4 @@ public:
 
     return answer;
   }
-};
-
-
-#endif // KClosestPointsToOrigin_h__
+};

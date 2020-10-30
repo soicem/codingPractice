@@ -1,6 +1,4 @@
-#ifndef CopyListWithRandomPointer_h__
-#define CopyListWithRandomPointer_h__
-
+#pragma once
 
 #include <vector>
 #include <unordered_map>
@@ -47,7 +45,4 @@ public:
 
     return targetPointNode.next;
   }
-};
-
-
-#endif // CopyListWithRandomPointer_h__
+};

@@ -1,6 +1,4 @@
-#ifndef CourseSchedule_h__
-#define CourseSchedule_h__
-
+#pragma once
 
 #include <unordered_map>
 #include <unordered_set>
@@ -48,7 +46,4 @@ public:
 
     return count == numCourses;
   }
-};
-
-
-#endif // CourseSchedule_h__
+};

@@ -1,6 +1,4 @@
-#ifndef BackspaceStringCompare_h__
-#define BackspaceStringCompare_h__
-
+#pragma once
 
 #include <vector>
 #include <string>
@@ -46,7 +44,4 @@ public:
 
     return true;
   }
-};
-
-
-#endif // BackspaceStringCompare_h__
+};

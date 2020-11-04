@@ -1,66 +1,92 @@
 #pragma once
 
-#include <vector>
+#include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <queue>
-
-using namespace std;
+#include <vector>
 
 class Solution {
 public:
-  unordered_map<string, vector<pair<string, double>>> graph;
+  std::unordered_map<std::string, int> variableIndex;
+  std::vector<std::vector<double>> cacheTable;
+  std::unordered_set<int> visited;
 
-  vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
-    for (int i = 0; i < equations.size(); ++i) {
-      auto& equation = equations[i];
-      auto& numerator = equation[0];
-      auto& denominator = equation[1];
-      auto& value = values[i];
+  std::vector<double> calcEquation(std::vector<std::vector<std::string>>& equations,
+                                   std::vector<double>& values,
+                                   std::vector<std::vector<std::string>>& queries) {
+    createIndexMap(equations);
+    initializeTable(equations, values);
 
-      graph[numerator].push_back({denominator, value});
-      graph[denominator].push_back({numerator, 1 / value});
+    std::vector<double> answer;
+    answer.reserve(queries.size());
+    for (auto query : queries) {
+      answer.push_back(queryResult(query));
     }
-
-    vector<double> answers;
-    for (auto& query : queries) {
-      double answer = runQuery(query);
-      answers.push_back(answer);
-    }
-    return answers;
+    return answer;
   }
 
-  double runQuery(vector<string>& query) {
-    auto& numerator = query[0];
-    auto& denominator = query[1];
-
-    if (numerator == denominator) {
-      return (graph.count(numerator) != 0) ? (1) : (-1);
-    }
-
-    unordered_set<string> used {numerator};
-    queue<pair<string, double>> q({{numerator, 1}});
-    while (!q.empty()) {
-      auto& top = q.front();
-      auto& variable = top.first;
-      auto& value = top.second;
-
-      for (auto& next : graph[variable]) {
-        auto& nextVariable = next.first;
-        auto& nextValue = next.second;
-
-        if (used.count(nextVariable) > 0) { continue; }
-        if (nextVariable == denominator) {
-          return value * nextValue;
+  void createIndexMap(std::vector<std::vector<std::string>>& equations) {
+    int i = 0;
+    for (const auto& equation : equations) {
+      for (const auto& variable : equation) {
+        const auto isCreated = variableIndex.emplace(variable, i).second;
+        if (isCreated) {
+          ++i;
         }
-
-        used.insert(nextVariable);
-        q.push({nextVariable, value * nextValue});
       }
+    }
+  }
 
-      q.pop();
+  void initializeTable(std::vector<std::vector<std::string>>& equations,
+                       std::vector<double>& values) {
+    cacheTable.resize(variableIndex.size(), std::vector<double>(variableIndex.size(), 0.0));
+
+    for (auto i = 0; i < cacheTable.size(); ++i) {
+      cacheTable[i][i] = 1.0;
     }
 
-    return -1;
+    for (auto i = 0; i < values.size(); ++i) {
+      auto variable1 = equations[i][0];
+      auto variable2 = equations[i][1];
+      const auto variable1Index = variableIndex[variable1];
+      const auto variable2Index = variableIndex[variable2];
+      cacheTable[variable1Index][variable2Index] = values[i];
+      cacheTable[variable2Index][variable1Index] = 1 / values[i];
+    }
+  }
+
+  double queryResult(std::vector<std::string>& query) {
+    const auto nominator = query[0];
+    const auto denominator = query[1];
+
+    if (!variableIndex.count(nominator) || !variableIndex.count(denominator)) {
+      return -1.0;
+    }
+
+    auto result = dfs(variableIndex[nominator], variableIndex[denominator]);
+    return result > 0 ? result : -1;
+  }
+
+  double dfs(int nominator, int denominator) {
+    if (cacheTable[nominator][denominator] > 0.0) {
+      return cacheTable[nominator][denominator];
+    }
+
+    visited.emplace(nominator);
+    auto answer = 0.0;
+    for (auto neighbor = 0; neighbor < cacheTable.size(); ++neighbor) {
+      if (visited.count(neighbor)) { continue; }
+      if (cacheTable[nominator][neighbor] == 0.0) { continue; }
+
+      const auto result = dfs(neighbor, denominator);
+      if (result > 0.0) {
+        answer = cacheTable[nominator][neighbor] * result;
+        cacheTable[nominator][denominator] = answer;
+        cacheTable[denominator][nominator] = 1 / answer;
+        break;
+      }
+    }
+    visited.erase(nominator);
+    return answer;
   }
 };
